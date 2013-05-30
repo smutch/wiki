@@ -37,7 +37,7 @@ class Page(object):
         self.path = path
         self.url = url
         self._meta = {}
-        self._toc = ''
+        self._toc = False
         if not new:
             self.load()
             self.render()
@@ -103,7 +103,8 @@ class Page(object):
 
     def prep_toc(self):
         # self._toc = self._toc.replace("<ul>", '<ul class="nav nav-stacked">')
-        pass
+        if self._toc.strip()=='<div class="toc"></div>':
+            self._toc = False
 
     @property
     def toc(self):
