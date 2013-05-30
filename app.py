@@ -23,11 +23,13 @@ from flask.ext.script import Manager
 def convertMarkdown(content):
     # Processes Markdown text to HTML, returns original markdown text,
     # and adds meta
-    md = markdown.Markdown(['codehilite', 'fenced_code', 'meta'])
+    md = markdown.Markdown(['codehilite', 'fenced_code', 'meta', 'attr_list',
+                            'abbr', 'toc'])
     html = md.convert(content)
     body = content.split('\n\n', 1)[1]
+    toc = md.toc
     meta = md.Meta
-    return html, body, meta
+    return html, body, meta, toc
 
 
 class Page(object):
@@ -35,6 +37,7 @@ class Page(object):
         self.path = path
         self.url = url
         self._meta = {}
+        self._toc = ''
         if not new:
             self.load()
             self.render()
@@ -44,7 +47,8 @@ class Page(object):
             self.content = f.read().decode('utf-8')
 
     def render(self):
-        self._html, self.body, self._meta = convertMarkdown(self.content)
+        self._html, self.body, self._meta, self._toc = convertMarkdown(self.content)
+        self.prep_toc()
 
     def save(self, update=True):
         folder = os.path.dirname(self.path)
@@ -96,6 +100,14 @@ class Page(object):
     @tags.setter
     def tags(self, value):
         self['tags'] = value
+
+    def prep_toc(self):
+        # self._toc = self._toc.replace("<ul>", '<ul class="nav nav-stacked">')
+        pass
+
+    @property
+    def toc(self):
+        return self._toc
 
 
 class Wiki(object):
