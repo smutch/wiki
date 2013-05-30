@@ -488,7 +488,7 @@ def edit(url):
             page = wiki.get_bare(url)
         form.populate_obj(page)
         page.save()
-        flash('"%s" was saved.' % page.title, 'success')
+        flash('"%s" was saved. - Don\'t forget to commit!' % page.title, 'success')
         return redirect(url_for('display', url=url))
     return render_template('editor.html', form=form, page=page)
 
